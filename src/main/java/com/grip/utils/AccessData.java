@@ -12,7 +12,6 @@ public enum AccessData {
 	CONFIG("config.properties"), 
 	TESTDATA("testdata.properties");
 
-	private String fileNameNew;
 	public static FileInputStream fis = null;
 	public static Properties prop = null;
 	private static final Logger LOGGER = Logger.getLogger(AccessData.class);
