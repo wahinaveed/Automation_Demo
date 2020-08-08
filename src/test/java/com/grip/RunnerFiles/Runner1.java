@@ -1,5 +1,7 @@
 package com.grip.RunnerFiles;
 
+import java.net.MalformedURLException;
+
 import org.junit.runner.RunWith;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
@@ -21,15 +23,10 @@ public class Runner1 extends AbstractTestNGCucumberTests {
 	DriverFactory driverFactory = new DriverFactory();
 
 	@BeforeTest
-	public void openBrowser() {
-		driverFactory.initializeDriver();
+	public void openBrowser() throws MalformedURLException {
+		//driverFactory.initializeDriver();
+		driverFactory.runInSeleniumGrid();
 	}
-
-	@AfterMethod
-	public void quitDriver() {
-		driverFactory.quitDriver();
-	}
-	
 	@AfterTest
 	public void logout() {
 		driverFactory.quitDriver();

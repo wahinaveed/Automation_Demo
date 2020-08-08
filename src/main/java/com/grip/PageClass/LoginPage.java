@@ -17,7 +17,7 @@ public class LoginPage extends BaseSeleniumMethods {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(id = "usernameFiel")
+	@FindBy(id = "usernameField")
 	public WebElement userName;
 
 	@FindBy(id = "passwordField")

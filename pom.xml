@@ -7,6 +7,10 @@
 	<name>Cucumber Maven Project</name>
 	<description>Cucumber Maven TestNG</description>
 
+	<properties>
+		<suite>cucumber-web</suite>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>com.qaprosoft</groupId>
@@ -16,7 +20,7 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>3.14.0</version>
+			<version>3.141.59</version>
 		</dependency>
 		<dependency>
 			<groupId>info.cukes</groupId>
@@ -45,7 +49,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -103,6 +106,25 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
@@ -114,15 +136,20 @@
 				<executions>
 					<execution>
 						<id>execution</id>
-						<phase>verify</phase>
+						<phase>test</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<projectName>AutomationDemo</projectName>
-							<outputDirectory>${project.build.directory}/Cucumber-JVM-Reports</outputDirectory>
+							<outputDirectory>reports</outputDirectory>
 							<cucumberOutput>${project.build.directory}/cucumber-json-report.json</cucumberOutput>
 							<skippedFails>true</skippedFails>
+							<inputDirectory>${project.build.directory}</inputDirectory>
+							<jsonFiles>
+								<param>**/*.json</param>
+							</jsonFiles>
+							<classificationDirectory>${project.build.directory}</classificationDirectory>
 							<enableFlashCharts>true</enableFlashCharts>
 						</configuration>
 					</execution>

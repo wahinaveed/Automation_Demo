@@ -1,6 +1,7 @@
 package com.grip.utils;
 
-import org.apache.log4j.Logger;
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchSessionException;
@@ -8,6 +9,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
@@ -17,12 +19,12 @@ import junit.framework.Assert;
 
 public class BaseSeleniumMethods extends DriverFactory {
 
-	private static final Logger LOGGER = Logger.getLogger(BaseSeleniumMethods.class);
+	//private static final Logger LOGGER = Logger.getLogger(BaseSeleniumMethods.class);
 	private static final long EXPLICIT_TIMEOUT = AccessData.CONFIG.getInt("EXPLICIT_TIMEOUT");
 	public static JavascriptExecutor js;
 	WebDriver drv = getdriver();
 
-	public void waitForPageLoaded(long timeout) {
+	public void waitForPageLoaded() {
 		js = (JavascriptExecutor) drv;
 		ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
 			public Boolean apply(WebDriver driver) {
@@ -30,7 +32,7 @@ public class BaseSeleniumMethods extends DriverFactory {
 			}
 		};
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, timeout);
+			WebDriverWait wait = new WebDriverWait(driver, EXPLICIT_TIMEOUT);
 			wait.until(expectation);
 		} catch (Throwable error) {
 			Assert.fail("Timeout waiting for Page Load Request to complete.");
@@ -41,9 +43,13 @@ public class BaseSeleniumMethods extends DriverFactory {
 		waitForElementTeBeVisible(webEle, EXPLICIT_TIMEOUT);
 	}
 
+	public void implicitlyWait() {
+		getdriver().manage().timeouts().implicitlyWait(EXPLICIT_TIMEOUT, TimeUnit.SECONDS);
+	}
+
 	public void waitForElementTeBeVisible(WebElement webEle, long timeout) {
 		try {
-			waitForPageLoaded(timeout);
+			implicitlyWait();
 			ExpectedCondition<?> waitCondition = null;
 			waitCondition = ExpectedConditions.visibilityOf(webEle);
 			Wait<WebDriver> wait = new WebDriverWait(drv, timeout, AccessData.CONFIG.getInt("RETRY_TIMEOUT"))
@@ -61,6 +67,17 @@ public class BaseSeleniumMethods extends DriverFactory {
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail("waitUntil: e..." + webEle + " - " + e.getMessage());
+		}
+	}
+
+	public void scrollTo(WebElement webEle) {
+		try {
+			Locatable locatableElement = (Locatable) webEle;
+			int y = locatableElement.getCoordinates().inViewPort().getY();
+			((JavascriptExecutor) getdriver()).executeScript("window.scrollBy(0," + (y) + ");");
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail("Unable to scroll for the element..." + webEle + " - " + e.getMessage());
 		}
 	}
 
