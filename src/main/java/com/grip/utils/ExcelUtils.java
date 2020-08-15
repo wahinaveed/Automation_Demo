@@ -5,14 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.xssf.binary.XSSFBRecordType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.aspectj.weaver.NewFieldTypeMunger;
 
 public class ExcelUtils {
 	public XSSFWorkbook wbook;
@@ -24,9 +21,10 @@ public class ExcelUtils {
 
 	public void enterWorkbook(String sheetName) throws IOException {
 		String excelFilePath = new File(".").getCanonicalPath() + AccessData.TESTDATA.get("DataSheetPath");
-		fos = new FileOutputStream(excelFilePath);
+		File file = new File(excelFilePath);
+		FileInputStream inputStream = new FileInputStream(file);
 		System.out.println("DataSheetPath - " + excelFilePath);
-		wbook = new XSSFWorkbook(excelFilePath);
+		wbook = new XSSFWorkbook(inputStream);
 		sheet = wbook.getSheet(sheetName);
 	}
 
@@ -55,7 +53,7 @@ public class ExcelUtils {
 		int rowNumber = 0;
 		int lastRowNum = sheet.getLastRowNum();
 		try {
-			for (int i = 0; i < lastRowNum; i++) {
+			for (int i = 0; i <= lastRowNum; i++) {
 				row = sheet.getRow(i);
 				if (row.getCell(0).getStringCellValue().equalsIgnoreCase(TCName)) {
 					rowNumber = i;
